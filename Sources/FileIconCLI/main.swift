@@ -22,6 +22,7 @@ struct Input: Codable {
 	let appOrPID: String
 	let size: Int
 	let destination: String?
+	let encode: Bool?
 }
 
 let decoder = JSONDecoder()
@@ -50,7 +51,11 @@ for input in inputs {
 			try icon.write(to: URL(fileURLWithPath: destination, isDirectory: false), options: .atomic)
 		}
 	} else {
-		CLI.standardOutput.write(icon)
+		if input.encode ?? false {
+			CLI.standardOutput.write(icon.base64EncodedData())
+		} else {
+			CLI.standardOutput.write(icon)
+		}
 
 		if inputs.count > 1 {
 			CLI.standardOutput.write("<EOF>")
